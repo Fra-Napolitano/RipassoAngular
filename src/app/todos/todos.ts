@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { TodosService } from '../services/todos';
 import { Todo } from '../model/todo.type';
+import { catchError } from 'rxjs';
 
 @Component({
   selector: 'app-todos',
@@ -13,7 +14,17 @@ export class Todos implements OnInit {
   todoItems = signal<Array<Todo>>([]);
 
   ngOnInit(): void {
-    console.log(this.todoService.todoItems);
-    this.todoItems.set(this.todoService.todoItems);
+    this.todoService
+      .getTodosFromApi()
+      .pipe(
+        catchError((err) => {
+          console.log(err);
+          throw err;
+        })
+      )
+      .subscribe((todos) => {
+        console.log(todos);
+        this.todoItems.set(todos);
+      });
   }
 }
