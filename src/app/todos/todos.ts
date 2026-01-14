@@ -28,4 +28,18 @@ export class Todos implements OnInit {
         this.todoItems.set(todos);
       });
   }
+
+  updateTodoItem(todoItem: Todo) {
+    this.todoItems.update((todos) => {
+      return todos.map((todo) => {
+        if (todo.id === todoItem.id) {
+          return {
+            ...todo,
+            completed: !todo.completed,
+          };
+        }
+        return todo;
+      });
+    });
+  }
 }
